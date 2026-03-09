@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Sticky Note Printer</title>
+<title>A4 Sticky Note Editor</title>
 <style>
   body { font-family: Arial, sans-serif }
   body { background: #f0f0f0 }
@@ -24,7 +24,7 @@
   .label { margin-bottom: 5px }
 
   .mb-10 { margin-bottom: 10px }
-  .hidden { display: none !important; }
+  .hidden { display: none !important }
 
   .btn { width: 100% }
   .btn { padding: 10px }
@@ -48,7 +48,7 @@
   .btn-small { cursor: pointer }
   .btn-small:hover { background: #004494 }
   
-  .input-number-small { width: 60px; padding: 10px; box-sizing: border-box; }
+  .input-number-small { width: 60px; padding: 10px; box-sizing: border-box }
 
   .page { width: 210mm }
   .page { height: 297mm }
@@ -61,26 +61,25 @@
   .page { box-sizing: border-box }
   .page { box-shadow: 0 0 10px rgba(0,0,0,0.5) }
 
-  .slot { width: 76mm; height: 76mm; box-sizing: border-box; padding: 5mm; position: relative; }
+  .slot { width: 76mm; height: 76mm; box-sizing: border-box; padding: 5mm; position: relative }
   .show-guide { border: 2px dashed #000 }
   .active-slot { background-color: #e6f2ff }
 
-  .slot-interior { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; /* Added overflow: hidden to contain and truncate content */ }
+  .slot-interior { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden }
 
-  .note-image { display: none; object-fit: contain; align-self: center; /* Default initial alignment */ margin-bottom: auto; /* Push image to top and take up remaining space */ flex-shrink: 0; max-height: calc(100% - 80px); /* rough estimate to keep text space */ }
+  .note-image { display: none; object-fit: contain; align-self: center; margin-bottom: auto; flex-shrink: 0; max-height: calc(100% - 80px) }
 
-  .editable-text { width: 100%; outline: none; margin-top: 10px; font-size: 16px; text-align: center; overflow: hidden; /* Prevent text growth beyond box and truncate visually */ flex: 1; /* grow to fill */ }
+  .editable-text { width: 100%; outline: none; margin-top: 10px; font-size: 16px; text-align: center; overflow: hidden; flex: 1 }
 
   .editable-text:empty:before { content: attr(data-placeholder) }
   .editable-text:empty:before { color: #888 }
 
   @media print {
-    body { background: white; padding: 0; margin: 0; }
+    body { background: white; padding: 0; margin: 0 }
     .controls { display: none }
-    .page { box-shadow: none; padding: 20mm; }
+    .page { box-shadow: none; padding: 20mm }
     .active-slot { background-color: transparent }
-    .show-guide { border: none !important; }
-    @page { margin: 0; size: A4; }
+    @page { margin: 0; size: A4 }
   }
 </style>
 </head>
@@ -96,7 +95,7 @@
       <button class="btn-small" onclick="formatText('italic')">I</button>
     </div>
     <div class="font-controls mb-10">
-      <span class="label" style="margin:0;">Font Size:</span>
+      <span class="label" style="margin:0">Font Size:</span>
       <button class="btn-small" onclick="changeFontSize(2)">+</button>
       <button class="btn-small" onclick="changeFontSize(-2)">-</button>
     </div>
@@ -109,11 +108,11 @@
     <div id="image-adjustments-panel" class="image-adjustments-panel hidden mb-10">
         <label class="label">Adjust Active Image</label>
         <div class="font-controls mb-10">
-            <span class="label" style="margin:0;">Width (%):</span>
+            <span class="label" style="margin:0">Width (%):</span>
             <input type="number" id="img-scale-input" value="50" min="10" max="100" step="5" oninput="adjustActiveImageScale(this.value)" class="input-number-small">
         </div>
         <div class="font-controls">
-            <span class="label" style="margin:0;">H-Position:</span>
+            <span class="label" style="margin:0">H-Position:</span>
             <button class="btn-small" onclick="adjustActiveImagePosition('flex-start')">L</button>
             <button class="btn-small" onclick="adjustActiveImagePosition('center')">C</button>
             <button class="btn-small" onclick="adjustActiveImagePosition('flex-end')">R</button>
@@ -138,7 +137,6 @@
     slot.className = 'slot show-guide'
     slot.onclick = () => selectSlot(currentIndex)
     
-    // Wrap the image and text in an interior div with overflow: hidden
     slot.innerHTML = `
         <div class="slot-interior">
             <img class="note-image" id="img-${currentIndex}" src="" alt="">
@@ -155,7 +153,6 @@
     slots.forEach(slot => slot.classList.remove('active-slot'))
     slots[index].classList.add('active-slot')
     
-    // Show adjustments panel if an image exists
     const img = document.getElementById('img-' + index)
     const panel = document.getElementById('image-adjustments-panel')
     const imgScaleInput = document.getElementById('img-scale-input')
@@ -189,39 +186,37 @@
   }
 
   function uploadImage(event) {
-    if (activeSlotIndex === null) { alert('Please click on a sticky note first'); return; }
-    const file = event.target.files[0];
+    if (activeSlotIndex === null) { alert('Please click on a sticky note first'); return }
+    const file = event.target.files[0]
     if (file) {
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = function(e) {
-            const img = document.getElementById('img-' + activeSlotIndex);
-            img.src = e.target.result;
-            img.style.display = 'block';
+            const img = document.getElementById('img-' + activeSlotIndex)
+            img.src = e.target.result
+            img.style.display = 'block'
             
-            // Set initial scale and position style explicitly on the element
-            img.style.width = '50%';
-            img.style.alignSelf = 'center';
+            img.style.width = '50%'
+            img.style.alignSelf = 'center'
 
-            // Show and update adjustments panel
             selectSlot(activeSlotIndex)
         }
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file)
     }
   }
 
   function adjustActiveImageScale(value) {
-    if (activeSlotIndex === null) return;
-    const img = document.getElementById('img-' + activeSlotIndex);
+    if (activeSlotIndex === null) return
+    const img = document.getElementById('img-' + activeSlotIndex)
     if (img) {
-        img.style.width = value + '%';
+        img.style.width = value + '%'
     }
   }
 
   function adjustActiveImagePosition(align) {
-    if (activeSlotIndex === null) return;
-    const img = document.getElementById('img-' + activeSlotIndex);
+    if (activeSlotIndex === null) return
+    const img = document.getElementById('img-' + activeSlotIndex)
     if (img) {
-        img.style.alignSelf = align;
+        img.style.alignSelf = align
     }
   }
 
